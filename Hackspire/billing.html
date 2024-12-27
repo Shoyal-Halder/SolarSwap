@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Billing System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8f0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #2e7d32;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .bill-details {
+            background-color: #e8f5e9;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-top: 2rem;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upi-button {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        .other-button {
+            background-color: white;
+            color: #2e7d32;
+            border: 2px solid #2e7d32;
+        }
+
+        .upi-button:hover {
+            background-color: #1b5e20;
+        }
+
+        .other-button:hover {
+            background-color: #e8f5e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Electricity Bill Calculator</h1>
+        
+        <div class="input-group">
+            <label for="units">Enter Units Consumed:</label>
+            <input type="number" id="units" placeholder="Enter number of units" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="rate">Regional Rate per Unit (₹):</label>
+            <input type="number" id="rate" placeholder="Enter regional rate" min="0" step="0.01">
+        </div>
+
+        <button onclick="calculateBill()" class="upi-button" style="width: 100%">Calculate Bill</button>
+
+        <div class="bill-details" id="billDetails" style="display: none;">
+            <div class="bill-row">
+                <span>Units Consumed:</span>
+                <span id="unitsDisplay">0</span>
+            </div>
+            <div class="bill-row">
+                <span>Rate per Unit:</span>
+                <span id="rateDisplay">₹0.00</span>
+            </div>
+            <div class="bill-row">
+                <span>Additional 10% Charge:</span>
+                <span id="additionalCharge">₹0.00</span>
+            </div>
+            <div class="bill-row" style="font-weight: bold; margin-top: 1rem;">
+                <span>Total Amount:</span>
+                <span id="totalAmount">₹0.00</span>
+            </div>
+
+            <div class="button-group">
+                <button class="upi-button" onclick="alert('Redirecting to UPI payment...')">Pay with UPI</button>
+                <button class="other-button" onclick="alert('Showing other payment options...')">Other Ways</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateBill() {
+            const units = parseFloat(document.getElementById('units').value) || 0;
+            const regionalRate = parseFloat(document.getElementById('rate').value) || 0;
+            
+            if (units <= 0 || regionalRate <= 0) {
+                alert('Please enter valid values for units and regional rate');
+                return;
+            }
+
+            const increasedRate = regionalRate * 1.1;
+            const totalBill = units * increasedRate;
+            const additionalCharge = units * (increasedRate - regionalRate);
+
+            document.getElementById('unitsDisplay').textContent = units;
+            document.getElementById('rateDisplay').textContent = `₹${increasedRate.toFixed(2)}`;
+            document.getElementById('additionalCharge').textContent = `₹${additionalCharge.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `₹${totalBill.toFixed(2)}`;
+            
+            document.getElementById('billDetails').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

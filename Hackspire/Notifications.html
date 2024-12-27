@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - SolarSwap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            background: transparent;
+            color: #00f7ff;
+            border: 2px solid #00f7ff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 2rem;
+        }
+
+        .notifications-container {
+            background: rgba(0, 20, 30, 0.8);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            animation: fadeUp 0.8s ease-out;
+        }
+
+        .notification {
+            border-bottom: 1px solid rgba(0, 247, 255, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+        .notification:hover {
+            background: rgba(0, 247, 255, 0.05);
+        }
+
+        .notification.unread {
+            background: rgba(0, 247, 255, 0.05);
+        }
+
+        .notification-dot {
+            width: 10px;
+            height: 10px;
+            background: #00f7ff;
+            border-radius: 50%;
+            margin-top: 6px;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-title {
+            color: #00f7ff;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .notification-time {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <nav>
+            <button class="back-button" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
+            <button class="back-button" onclick="markAllRead()">Mark All as Read</button>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="notifications-container">
+            <div class="notification unread">
+                <div class="notification-dot"></div>
+                <div class="notification-content">
+                    <div class="notification-title">Energy Production Peak Achieved!</div>
+                    <div class="notification-message">Your solar panels reached peak efficiency today, producing 15% more energy than average.</div>
+                    <div class="notification-time">2 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification unread">
+                <div class="notification-dot"></div>
+                <div class="notification-content">
+                    <div class="notification-title">New EV Charging Station Connected</div>
+                    <div class="notification-message">A new charging station in your neighborhood has joined the network. You can now contribute excess energy to this location.</div>
+                    <div class="notification-time">5 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification unread">
+                <div class="notification-dot"></div>
+                <div class="notification-content">
+                    <div class="notification-title">Monthly Energy Report Available</div>
+                    <div class="notification-message">Your April energy production and consumption report is now available. View detailed insights about your energy usage.</div>
+                    <div class="notification-time">1 day ago</div>
+                </div>
+            </div>
+
+            <div class="notification">
+                <div class="notification-content">
+                    <div class="notification-title">System Maintenance Complete</div>
+                    <div class="notification-message">Scheduled maintenance has been completed. All systems are operating at optimal efficiency.</div>
+                    <div class="notification-time">3 days ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function markAllRead() {
+            const unreadNotifications = document.querySelectorAll('.notification.unread');
+            unreadNotifications.forEach(notification => {
+                notification.classList.remove('unread');
+                const dot = notification.querySelector('.notification-dot');
+                if (dot) {
+                    dot.remove();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
