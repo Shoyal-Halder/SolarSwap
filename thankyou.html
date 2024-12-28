@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .main-heading {
+            font-size: 4.5rem;
+            font-weight: bold;
+            color: #00f7ff;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(-100vh);
+            animation: flyIn 1s ease-out forwards;
+        }
+
+        @keyframes flyIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .visible {
+            animation: fadeUp 1s ease-out forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .text-section {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            padding: 2rem;
+            background: rgba(0, 247, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            backdrop-filter: blur(5px);
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0% {
+                box-shadow: 0 0 10px rgba(0, 247, 255, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 247, 255, 0.6),
+                            0 0 50px rgba(0, 247, 255, 0.3),
+                            inset 0 0 30px rgba(0, 247, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(0, 247, 255, 0.2);
+            }
+        }
+
+        h2 {
+            color: #00f7ff;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        p {
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            background: transparent;
+            color: #00f7ff;
+            border: 2px solid #00f7ff;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: rgba(0, 247, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .main-heading {
+                font-size: 3rem;
+            }
+
+            .text-section {
+                padding: 1.5rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-heading" id="solarSwap">
+            Thank You !!
+        </div>
+        <div class="content">
+            <div class="text-section">
+                <h2>Our heartly thanks</h2>
+                <p>Thank you for generously contributing your home's surplus solar energy for society’s welfare. Your selflessness and commitment to sustainability inspire us all to create a brighter, greener future together!</p>
+                <p>Join the SolarSwap program to make a difference and enjoy seamless charging experiences. Together, we can build a sustainable future.</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        observer.observe(document.querySelector('.content'));
+
+        function redirectToSignUp() {
+            alert('Redirecting to signup page...');
+            window.location.href = "login_signup.html";
+        }
+
+        function redirectToLogin() {
+            alert('Redirecting to login page...');
+            window.location.href = "loginpage.html";
+        }
+    </script>
+</body>
+</html>

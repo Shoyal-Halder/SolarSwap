@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - SolarSwap</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Reusing existing styles for sidebar and header */
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 20, 30, 0.95);
+            border-right: 1px solid rgba(0, 247, 255, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            padding-top: 80px;
+        }
+
+        .sidebar.active {
+            left: 0;
+            box-shadow: 5px 0 15px rgba(0, 247, 255, 0.2);
+        }
+
+        .sidebar-item {
+            padding: 1rem 2rem;
+            color: #00f7ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(0, 247, 255, 0.1);
+        }
+
+        .header {
+            background: rgba(0, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .menu-toggle {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #00f7ff;
+            font-size: 1.5rem;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        button {
+            background: transparent;
+            color: #00f7ff;
+            border: 2px solid #00f7ff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+        }
+
+        .main-content {
+            margin-left: 0;
+            margin-top: 80px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.shifted {
+            margin-left: 300px;
+        }
+
+        /* History Specific Styles */
+        .history-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeUp 0.8s ease-out;
+        }
+
+        .history-header {
+            background: rgba(0, 20, 30, 0.8);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            color: #00f7ff;
+            margin: 0.5rem 0;
+        }
+
+        .history-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-select {
+            background: rgba(0, 20, 30, 0.8);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 25px;
+            padding: 0.8rem 1.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #00f7ff;
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.2);
+        }
+
+        .history-list {
+            background: rgba(0, 20, 30, 0.8);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .history-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 2rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 247, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(0, 247, 255, 0.05);
+        }
+
+        .history-date {
+            color: #00f7ff;
+            font-size: 0.9rem;
+        }
+
+        .history-type {
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            background: rgba(0, 247, 255, 0.1);
+            color: #00f7ff;
+        }
+
+        .history-amount {
+            font-weight: bold;
+        }
+
+        .amount-positive {
+            color: #00ff9d;
+        }
+
+        .amount-negative {
+            color: #ff6b6b;
+        }
+
+        .history-chart {
+            background: rgba(0, 20, 30, 0.8);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-item">
+            <span><button onclick="window.location.href='profilepage.html'">Profile</button></span>
+        </div>
+        <div class="sidebar-item">
+            <span><button onclick="window.location.href='Notifications.html'">Notifications</button></span>
+        </div>
+        <div class="sidebar-item">
+            <span><button onclick="window.location.href='history.html'">History</button></span>
+        </div>
+        <div class="sidebar-item">
+            <span><button onclick="window.location.href='setting.html'">Settings</button></span>
+        </div>
+        <div class="sidebar-item">
+            <span><button onclick="window.location.href='cust_support.html'">Help</button></span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="menu-toggle">☰</div>
+        <nav>
+            <button onclick="window.location.href='dashboard.html'">Dashboard</button>
+            <button onclick="window.location.href='profile.html'">Profile</button>
+            <button onclick="window.location.href='cust_support.html'">Help Me</button>
+            <button onclick="window.location.href='billing.html'">Billing</button>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="history-container">
+            <div class="history-header">
+                <h1>Energy Trading History</h1>
+                <div class="history-stats">
+                    <div class="stat-card">
+                        <h3>Total Energy Shared</h3>
+                        <div class="stat-value">1,234 kWh</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Earnings</h3>
+                        <div class="stat-value">₹892.50</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active connections</h3>
+                        <div class="stat-value">3</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-chart">
+                <canvas id="tradingChart"></canvas>
+            </div>
+
+            <div class="history-filters">
+                <select class="filter-select">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 3 Months</option>
+                    <option>Last Year</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Transactions</option>
+                    <option>Energy Shared</option>
+                    <option>Energy Received</option>
+                    <option>Payments</option>
+                </select>
+            </div>
+
+            <div class="history-list">
+                <div class="history-item">
+                    <span class="history-date">Jun 27, 2024 14:30</span>
+                    <span class="history-type">Energy Shared</span>
+                    <span>Community Pool Contribution</span>
+                    <span class="history-amount amount-positive">+15.2 kWh</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-date">Jun 27, 2024 12:15</span>
+                    <span class="history-type">Payment Received</span>
+                    <span>Energy Credit Payment</span>
+                    <span class="history-amount amount-positive">+₹12.40</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-date">Jun 26, 2024 18:45</span>
+                    <span class="history-type">Energy Shared</span>
+                    <span>Direct Trade with ID#1234</span>
+                    <span class="history-amount amount-positive">+8.5 kWh</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-date">Jun 26, 2024 09:20</span>
+                    <span class="history-type">Energy Received</span>
+                    <span>Grid Support</span>
+                    <span class="history-amount amount-negative">-3.2 kWh</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Toggle
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.main-content').classList.toggle('shifted');
+        });
+
+        // Trading History Chart
+        const ctx = document.getElementById('tradingChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jun 21', 'Jun 22', 'Jun 23', 'Jun 24', 'Jun 25', 'Jun 26', 'Jun 27'],
+                datasets: [{
+                    label: 'Energy Shared (kWh)',
+                    data: [12, 19, 15, 17, 14, 13, 15],
+                    borderColor: '#00f7ff',
+                    backgroundColor: 'rgba(0, 247, 255, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

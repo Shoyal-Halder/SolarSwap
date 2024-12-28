@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarSwap - Login</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --secondary: #0066ff;
+            --dark: #0a0a0a;
+            --darker: #000000;
+            --light: #e6ffff;
+            --neon-glow: 0 0 10px #00f7ff, 0 0 20px #00f7ff, 0 0 30px #00f7ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--light);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: rgba(10, 10, 10, 0.8);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .sun-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--darker);
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: var(--neon-glow);
+        }
+
+        input::placeholder {
+            color: rgba(230, 255, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--dark);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        button:hover {
+            background: var(--primary);
+            color: var(--dark);
+            box-shadow: var(--neon-glow);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+            opacity: 0;
+        }
+
+        .links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .links a:hover {
+            text-shadow: var(--neon-glow);
+        }
+
+        .divider {
+            margin: 0 1rem;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="sun-icon"></div>
+        <h1>Welcome Back</h1>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" placeholder="Password" required>
+            </div>
+            <button type="submit" onclick="redirectToDashboard()">Login</button>
+        </form>
+        <div class="links">
+            <a href="forgot-password.html">Forgot Password?</a>
+            <span class="divider">|</span>
+            <a href="login_signup.html">Create Account</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.to('.form-container', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out'
+            });
+
+            gsap.to('.input-group', {
+                opacity: 1,
+                x: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: 'power2.out',
+                delay: 0.5
+            });
+
+            gsap.to('button', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                delay: 1
+            });
+
+            gsap.to('.links', {
+                opacity: 1,
+                duration: 0.8,
+                ease: 'power2.out',
+                delay: 1.2
+            });
+
+            gsap.to('.sun-icon', {
+                rotation: 360,
+                duration: 20,
+                repeat: -1,
+                ease: "none"
+            });
+        });
+        function redirectToDashboard() {
+            window.location.href = "dashboard.html";
+            }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const inputs = e.target.querySelectorAll('input');
+            const loginData = {
+                email: inputs[0].value,
+                password: inputs[1].value
+            };
+
+            const button = e.target.querySelector('button');
+            button.style.transform = 'scale(0.95)';
+            
+            try {
+                const response = await fetch('http://localhost:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Login successful! Redirecting to dashboard...');
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert(data.error || 'Invalid email or password.');
+                }
+            } catch (error) {
+                alert('Error connecting to server. Please try again.');
+            } finally {
+                button.style.transform = 'scale(1)';
+            }
+        });
+    </script>
+</body>
+</html>
